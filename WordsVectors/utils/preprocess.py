@@ -1,4 +1,5 @@
 # one place for all pre-processing utilities
+import random
 
 def get_count_distinct(corpus):
     """
@@ -20,7 +21,7 @@ def get_count_distinct(corpus):
 
 def get_vocab_dicts(vocab_size, vocab):
     """
-    Function to get helper dicts for word indexing.
+    Helper dicts for word indexing.
 
     Arguments:
     vocab_size - size of the vocabulary.
@@ -40,3 +41,27 @@ def get_vocab_dicts(vocab_size, vocab):
         idx2word[idx] = vocab[idx]
 
     return word2idx, idx2word
+
+def generate_sample(corpus, word2idx, window_size=2):
+    """
+    Generate samples to train a skip-gram model.
+
+    Arguments:
+    corpus - corpus - a list of sentences(also a list of strings(words)).
+    window_size - size of the context window.
+    word2idx - dict that maps words to indices.
+
+    Returns:
+    context_indices - indices for the words in the context of the center word. 
+    center_index - index of the center word.
+    """
+
+    context_words = []
+    sampled_sentence = random.choice(corpus)
+    center_idx = random.randrange(window_size, len(sampled_sentence)-window_size)
+
+    for i in range(window_size):
+        context_words.append(sampled_sentence[center_idx + i + 1])
+        context_words.append(sampled_sentence[center_idx - i - 1])
+
+    return [word2idx[word] for word in context_words], word2idx[sampled_sentence[center_idx]]
