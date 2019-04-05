@@ -1,0 +1,3 @@
+-> Use QANet for structuring the model and pipeline.
+-> Train on the local GPU
+-> Tensorboard 
