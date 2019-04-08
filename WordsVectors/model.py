@@ -9,7 +9,7 @@ from utils.preprocess import *
 class SkipGram(object):
     """
     """
-    def __init__(self, vocab_size, embedding_dim, window_size, batch_size, num_sampled=16, graph=None):
+    def __init__(self, vocab_size, embedding_dim, window_size, batch_size, num_sampled=2, graph=None):
         # word vector properties
         self.vocab_size = vocab_size
         self.embedding_dim = embedding_dim
@@ -19,14 +19,14 @@ class SkipGram(object):
         # number of negative samples to be sampled
         self.num_sampled = num_sampled
 
-        self.graph = if graph is not None else tf.Graph()
+        self.graph = graph if graph is not None else tf.Graph()
 
         with self.graph.as_default():
             self.global_step = tf.get_variable('global_step', shape=[], dtype=tf.int32,
                                                 initializer=tf.constant_initializer(0), trainable=False)
 
             # placeholders for context(inputs) and center(labels)
-            self.context_indices = tf.placeholder(tf.int32, shape=[self.batch_size, 2*self.window_size - 1])
+            self.context_indices = tf.placeholder(tf.int32, shape=[self.batch_size])
             self.center_idx = tf.placeholder(tf.int32, shape=[batch_size, 1])
 
             # embedding matrix
@@ -36,13 +36,20 @@ class SkipGram(object):
             # nce parameters
             self.nce_weights = tf.Variable(
                     tf.truncated_normal([self.vocab_size, self.embedding_dim], stddev = 1.0/math.sqrt(self.embedding_dim)))
-            self.nce_biases = tf.Variable(tf.zeros[self.vocab_size])
+            self.nce_biases = tf.Variable(tf.zeros([self.vocab_size]))
 
-            # TODO
-            # self.forward()
+            # forward pass through the graph
+            self.forward()
 
-            # TODO
             # training and optimizer
+            self.lr = 0.0001
+            self.optimizer = tf.train.AdamOptimizer(learning_rate=self.lr, beta1=0.8, beta2=0.999, epsilon=1e-7)
+            # compute and apply gradients
+            grads = self.optimizer.compute_gradients(self.loss)
+            gradients, variables = zip(*grads)
+            self.train_op = self.optimizer.apply_gradients(
+                zip(gradients, variables), global_step=self.global_step)
+
 
     def forward(self):
 

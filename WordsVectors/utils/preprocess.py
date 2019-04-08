@@ -59,9 +59,10 @@ def generate_sample(corpus, word2idx, window_size=2):
     context_words = []
     sampled_sentence = random.choice(corpus)
     center_idx = random.randrange(window_size, len(sampled_sentence)-window_size)
+    context_idx = random.randrange(center_idx-window_size, center_idx+window_size)
 
-    for i in range(window_size):
-        context_words.append(sampled_sentence[center_idx + i + 1])
-        context_words.append(sampled_sentence[center_idx - i - 1])
+    # for i in range(window_size):
+    #     context_words.append(sampled_sentence[center_idx + i + 1])
+    #     context_words.append(sampled_sentence[center_idx - i - 1])
 
-    return [word2idx[word] for word in context_words], word2idx[sampled_sentence[center_idx]]
+    return word2idx[sampled_sentence[context_idx]], word2idx[sampled_sentence[center_idx]]
