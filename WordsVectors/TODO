@@ -1,3 +1,4 @@
 -> Use QANet for structuring the model and pipeline.
--> Train on the local GPU
--> Tensorboard 
+-> Train on the local GPU - Model running on CPU without errors
+-> Tensorboard - summary plots and t-SNE visualizations
+-> Batchify the generate function

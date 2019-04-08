@@ -1,5 +1,6 @@
 # one place for all pre-processing utilities
 import random
+import numpy as np
 
 def get_count_distinct(corpus):
     """
@@ -42,7 +43,7 @@ def get_vocab_dicts(vocab_size, vocab):
 
     return word2idx, idx2word
 
-def generate_sample(corpus, word2idx, window_size=2):
+def generate_batch(corpus, word2idx, window_size=2, batch_size=8):
     """
     Generate samples to train a skip-gram model.
 
@@ -56,13 +57,19 @@ def generate_sample(corpus, word2idx, window_size=2):
     center_index - index of the center word.
     """
 
-    context_words = []
-    sampled_sentence = random.choice(corpus)
-    center_idx = random.randrange(window_size, len(sampled_sentence)-window_size)
-    context_idx = random.randrange(center_idx-window_size, center_idx+window_size)
+    # placeholder for batch data
+    context_indices = np.zeros((batch_size, ))
+    center_indices = np.zeros((batch_size, 1))
 
-    # for i in range(window_size):
-    #     context_words.append(sampled_sentence[center_idx + i + 1])
-    #     context_words.append(sampled_sentence[center_idx - i - 1])
+    # randomly sample a sentence from the corpus
+    for i in range(batch_size):
+        sampled_sentence = random.choice(corpus)
+        # sample context and center word from the sentence
+        center_idx = random.randrange(window_size, len(sampled_sentence)-window_size)
+        context_idx = random.randrange(center_idx-window_size, center_idx+window_size)
+        # populate the placeholders
+        context_indices[i] = context_idx
+        center_indices[i] = [center_idx]
 
-    return word2idx[sampled_sentence[context_idx]], word2idx[sampled_sentence[center_idx]]
+
+    return context_indices, center_indices
