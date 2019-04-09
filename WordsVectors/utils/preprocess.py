@@ -63,7 +63,10 @@ def generate_batch(corpus, word2idx, window_size=2, batch_size=8):
 
     # randomly sample a sentence from the corpus
     for i in range(batch_size):
-        sampled_sentence = random.choice(corpus)
+        while True:
+            sampled_sentence = random.choice(corpus)
+            if((len(sampled_sentence)>2 * window_size)):
+                break
         # sample context and center word from the sentence
         center_idx = random.randrange(window_size, len(sampled_sentence)-window_size)
         context_idx = random.randrange(center_idx-window_size, center_idx+window_size)
@@ -73,3 +76,28 @@ def generate_batch(corpus, word2idx, window_size=2, batch_size=8):
 
 
     return context_indices, center_indices
+
+def clean_str(string):
+    """
+    Tokenization/string cleaning for all datasets.
+
+    Arguments:
+    string - string to be cleaned and tokenized.
+
+    Returns:
+    string - cleaned and tokenized input.
+    """
+    string = re.sub(r"[^A-Za-z0-9(),!?\'\`]", " ", string)     
+    string = re.sub(r"\'s", " \'s", string) 
+    string = re.sub(r"\'ve", " \'ve", string) 
+    string = re.sub(r"n\'t", " n\'t", string) 
+    string = re.sub(r"\'re", " \'re", string) 
+    string = re.sub(r"\'d", " \'d", string) 
+    string = re.sub(r"\'ll", " \'ll", string) 
+    string = re.sub(r",", " , ", string) 
+    string = re.sub(r"!", " ! ", string) 
+    string = re.sub(r"\(", " \( ", string) 
+    string = re.sub(r"\)", " \) ", string) 
+    string = re.sub(r"\?", " \? ", string) 
+    string = re.sub(r"\s{2,}", " ", string) # replace more than 2 whitespace with 1 whitespace   
+    return string.strip().split()

@@ -8,8 +8,24 @@ from utils.preprocess import *
 
 class SkipGram(object):
     """
+    Model object with all training parameters for Skip-gram.
+
+    Methods:
+    __init__ - constructor for the model object.
+    forward - forward pass through the network.
     """
-    def __init__(self, vocab_size, embedding_dim, window_size, batch_size, num_sampled=2, graph=None):
+    def __init__(self, vocab_size, embedding_dim, window_size, batch_size, num_sampled=16, graph=None):
+        """
+        Constructor method for the Skip-gram model object.
+
+        Arguments:
+        vocab_size - vocabulary size of the corpus.
+        embedding_dim - size of the word vectors to train.
+        window_size - context window size.
+        batch_size - size of the batch while training.
+        num_sampled - number of negative samples in NCE
+        graph - Tensorflow graph.
+        """
         # word vector properties
         self.vocab_size = vocab_size
         self.embedding_dim = embedding_dim
@@ -42,7 +58,7 @@ class SkipGram(object):
             self.forward()
 
             # training and optimizer
-            self.lr = 0.0001
+            self.lr = 0.001
             self.optimizer = tf.train.AdamOptimizer(learning_rate=self.lr, beta1=0.8, beta2=0.999, epsilon=1e-7)
             # compute and apply gradients
             grads = self.optimizer.compute_gradients(self.loss)
@@ -52,7 +68,9 @@ class SkipGram(object):
 
 
     def forward(self):
-
+        """
+        Forward pass through the network.
+        """
         with tf.variable_scope("Embedding_Layer"):
             self.embed = tf.nn.embedding_lookup(self.embeddings, self.context_indices)
 

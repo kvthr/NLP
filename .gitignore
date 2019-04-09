@@ -12,6 +12,7 @@
 *.gz
 *.jar
 *.tgz
+*.pkl
 
 # Binaries
 *.exe
