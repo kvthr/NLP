@@ -6,6 +6,10 @@
 **/.DS_STORE
 **/.ipynb_checkpoints
 
+# some files
+*.tsv
+*.npy
+
 # Packages
 *.zip
 *.tar
@@ -19,6 +23,12 @@
 *.dll
 *.class
 *.so
+
+# Tensorboard projector
+projector
+
+# Tensorflow saves
+save_dir
 
 # Logs
 logs

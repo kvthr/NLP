@@ -1,4 +1,4 @@
--> Use QANet for structuring the model and pipeline.
+-> Add saver object.
 -> Train on the local GPU - Model running on CPU without errors
--> Tensorboard - summary plots and t-SNE visualizations
--> Batchify the generate function
+-> Tensorboard - Embeddings projectoe.
+-> Batchify the generate function - More efficient implementation.
