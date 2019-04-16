@@ -3,7 +3,7 @@ import math
 import numpy as np
 import tensorflow as tf
 
-# import pre-processing utilities
+# import packages from this module
 from utils.preprocess import *
 
 class SkipGram(object):

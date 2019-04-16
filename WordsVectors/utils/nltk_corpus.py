@@ -1,9 +1,9 @@
 # script to construct the corpus in the required format for training
-
-# import required libraries
+# import packages
 import pickle
 import re
 from nltk.corpus import brown
+# packages from this module
 from preprocess import *
 
 # construct the sentences using categories
