@@ -21,16 +21,17 @@ window_size = 2
 graph = tf.Graph()
 with graph.as_default() as g:
     # create an instance of SkipGram model
-    model = SkipGram(vocab_size=vocab_size, embedding_dim=128, window_size=window_size, batch_size=16, graph=g)
+    model = SkipGram(vocab_size=vocab_size, embedding_dim=128,
+                     window_size=window_size, batch_size=16, graph=g)
 
     # configure GPU options
     sess_config = tf.ConfigProto(allow_soft_placement=True)
     sess_config.gpu_options.allow_growth = True
-    
+
     # start the Tensorflow session
     with tf.Session(config=sess_config) as sess:
 
-        # writer and saver objects 
+        # writer and saver objects
         writer = tf.summary.FileWriter("./logs")
         sess.run(tf.global_variables_initializer())
         saver = tf.train.Saver()
@@ -41,17 +42,19 @@ with graph.as_default() as g:
             print("Writing Embeddings to a file...")
             np.save("./embeddings.npy", model.embeddings.eval())
         global_step = max(sess.run(model.global_step), 1)
-        
-        # start training loop 
+
+        # start training loop
         for _ in range(global_step, 150000):
 
             global_step = sess.run(model.global_step) + 1
             # batch for single training step
-            context_indices, center_indices = generate_batch(corpus, word2idx, window_size=window_size, batch_size=model.batch_size)
+            context_indices, center_indices = generate_batch(
+                corpus, word2idx, window_size=window_size, batch_size=model.batch_size)
             loss, train_op = sess.run([model.loss, model.train_op], feed_dict={
-                                    model.context_indices: context_indices, model.center_idx: center_indices})
+                model.context_indices: context_indices, model.center_idx: center_indices})
             # write loss(summary) for Tensorboard visualizations
-            loss_sum = tf.Summary(value=[tf.Summary.Value(tag="model/loss", simple_value=loss), ])
+            loss_sum = tf.Summary(value=[tf.Summary.Value(
+                tag="model/loss", simple_value=loss), ])
             writer.add_summary(loss_sum, global_step)
             # print loss for every 1000 steps
             if global_step % 1000 == 0:
@@ -59,5 +62,6 @@ with graph.as_default() as g:
             # save model checkpoints for every 50000 steps
             if global_step % 50000 == 0:
                 print("Saving checkpoint..")
-                filename = os.path.join("./save_dir", "model_{}".format(global_step))
+                filename = os.path.join(
+                    "./save_dir", "model_{}".format(global_step))
                 saver.save(sess, filename)

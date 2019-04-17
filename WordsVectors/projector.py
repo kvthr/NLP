@@ -40,16 +40,16 @@ writer = tf.summary.FileWriter("./projector", sess.graph)
 # run
 sess.run(init, feed_dict={X_init: embeddings})
 
-#Configure a Tensorflow Projector
+# Configure a Tensorflow Projector
 config = projector.ProjectorConfig()
 embed = config.embeddings.add()
 embed.metadata_path = tsv_filepth
 
-#Write a projector_config
+# Write a projector_config
 projector.visualize_embeddings(writer, config)
 
-#save a checkpoint
-saver.save(sess, './projector/model.ckpt', global_step = vocab_size)
+# save a checkpoint
+saver.save(sess, './projector/model.ckpt', global_step=vocab_size)
 
-#close the session
+# close the session
 sess.close()
