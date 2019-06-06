@@ -1,4 +1,0 @@
--> Add saver object.
--> Train on the local GPU - Model running on CPU without errors
--> Tensorboard - Embeddings projectoe.
--> Batchify the generate function - More efficient implementation.
