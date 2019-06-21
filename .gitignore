@@ -1,5 +1,9 @@
 # FILES REQUIRED TO BE LEFT UNTRACKED BY GIT
 
+# JUST FOR THIS PROJECT
+# EXCLUDING THE TESTING SCRIPT
+testing_script.py
+
 *.pyc
 **/__pycache__/**
 **/node_modules/**

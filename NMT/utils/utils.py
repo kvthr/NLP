@@ -3,8 +3,6 @@
 import logging
 import re
 
-logger = logging.getLogger(__name__)
-
 # from tensorflow examples
 def preprocess_sentence(sentence=None):
     sentence = re.sub(r"([?.!,¿])", r" \1 ", sentence)

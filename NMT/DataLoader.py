@@ -12,7 +12,8 @@ from utils.utils import *
 
 # DataLoader object for generating training/evaluation data
 class DataLoader(object):
-    """
+    """ Load the parallel data for NMT.
+    Batchify and preprocess the data.
     """
     def __init__(self,
                 source_filepath=None,
@@ -32,6 +33,7 @@ class DataLoader(object):
         self.src_tensors = [[self.src.word2idx[word] for word in sent] for sent in self.src_tensors]
         self.tgt_tensors = [[self.tgt.word2idx[word] for word in sent] for sent in self.tgt_tensors]
 
+        # pad the source and target sequences to max_sequence_length 
         self.src_tensors = tf.keras.preprocessing.sequence.pad_sequences(
             self.src_tensors,
             maxlen=max_sequence_length,
@@ -42,7 +44,7 @@ class DataLoader(object):
             maxlen=max_sequence_length,
             padding='post'
         )
-
+        # load data from tf.data
         self.data = tf.data.Dataset.from_tensor_slices((self.src_tensors, self.tgt_tensors)).shuffle(buffer_size=1000)
         self.data = self.data.batch(self.batch_size, drop_remainder=True)
 
