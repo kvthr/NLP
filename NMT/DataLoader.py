@@ -21,7 +21,7 @@ class DataLoader(object):
                 src_LanguageIndex=None,
                 tgt_LanguageIndex=None,
                 batch_size=16,
-                max_sequence_length=100):
+                max_sequence_length=50):
         self.src_tensors = read_file(filepath=source_filepath)
         self.tgt_tensors = read_file(filepath=target_filepath)
 

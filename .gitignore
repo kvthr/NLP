@@ -9,6 +9,7 @@ testing_script.py
 **/node_modules/**
 **/.DS_STORE
 **/.ipynb_checkpoints
+**/model_dir/**
 
 # NMT data files
 *.en
