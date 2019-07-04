@@ -15,7 +15,17 @@ class BiLSTMEncoder(tf.keras.Model):
             input_dim=vocab_size,
             output_dim=embedding_dim
         )
-        self.rnn = tf.keras.layers.Bidirectional(
+
+        if tf.test.is_gpu_available():
+            self.rnn = tf.keras.layers.Bidirectional(
+                tf.keras.layers.CuDNNLSTM(
+                    units=self.encoder_size,
+                    return_sequences=True,
+                    return_state=True
+                )
+            )
+        else:
+            self.rnn = tf.keras.layers.Bidirectional(
             tf.keras.layers.LSTM(
                 units=self.encoder_size,
                 return_sequences=True,

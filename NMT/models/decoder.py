@@ -15,7 +15,15 @@ class Decoder(tf.keras.Model):
             input_dim=vocab_size,
             output_dim=embedding_dim
         )
-        self.rnn = tf.keras.layers.LSTM(
+        
+        if tf.test.is_gpu_available(): 
+            self.rnn = tf.keras.layers.CuDNNLSTM(
+                units=self.decoder_size,
+                return_sequences=True,
+                return_state=True
+            )
+        else:
+            self.rnn = tf.keras.layers.LSTM(
             units=self.decoder_size,
             return_sequences=True,
             return_state=True
