@@ -83,7 +83,7 @@ def run(args):
     encoder = BiLSTMEncoder(
         vocab_size = len(src_LI.word2idx),
         embedding_dim=128,
-        encoder_size=8,
+        encoder_size=16,
         batch_size=args.batch_size
     )
     print("Created an encoder object.")
@@ -92,7 +92,7 @@ def run(args):
     decoder = Decoder(
         vocab_size = len(tgt_LI.word2idx),
         embedding_dim=128,
-        decoder_size=8,
+        decoder_size=16,
         batch_size=args.batch_size
     )
     print("Created a decoder object.")
