@@ -46,7 +46,7 @@ parser.add_argument(
 parser.add_argument(
     '-batch_size',
     type=int,
-    default=4,
+    default=8,
     help="size of the training mini-batch"
 )
 parser.add_argument(
@@ -62,9 +62,18 @@ parser.add_argument(
     help="directory to store model files"
 )
 
+parser.add_argument(
+    '-log_dir',
+    type=str,
+    help="directory to store log/tensorboard files"
+)
+
 args = parser.parse_args()
 checkpoint_dir = args.model_dir + './training_checkpoints'
 checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
+
+# create a writer to write summaries/losses
+writer = tf.contrib.summary.create_file_writer(args.log_dir)
 
 def run(args):
     print("Creating Langauge Indices for source and target...")
@@ -136,6 +145,9 @@ def run(args):
                     decoder_input = tf.expand_dims(target_seq[:, t], 1)
             
             batch_loss = (loss / int(target_seq.shape[1]))
+            # write batch_loss to the tensorboard logs
+            with writer.as_default():
+                tf.contrib.summary.scalar('TrainingLoss', batch_loss.numpy(), batch+1)
             total_loss += batch_loss
             
             variables = encoder.variables + decoder.variables
