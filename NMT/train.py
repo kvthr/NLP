@@ -73,6 +73,7 @@ checkpoint_dir = args.model_dir + './training_checkpoints'
 checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
 
 # create a writer to write summaries/losses
+global_step = tf.train.get_or_create_global_step()
 writer = tf.contrib.summary.create_file_writer(args.log_dir)
 
 def run(args):
@@ -127,6 +128,7 @@ def run(args):
         total_loss = 0
         
         for (batch, (input_seq, target_seq)) in enumerate(Data.data):
+            
             loss = 0
             with tf.GradientTape() as tape:
                 encoder_output = encoder(input_seq)
@@ -146,14 +148,14 @@ def run(args):
             
             batch_loss = (loss / int(target_seq.shape[1]))
             # write batch_loss to the tensorboard logs
-            with writer.as_default():
-                tf.contrib.summary.scalar('TrainingLoss', batch_loss.numpy(), batch+1)
+            with writer.as_default(), tf.contrib.summary.always_record_summaries():
+                tf.contrib.summary.scalar('TrainingLoss', batch_loss.numpy())
             total_loss += batch_loss
             
             variables = encoder.variables + decoder.variables
             gradients = tape.gradient(loss, variables)
             
-            optimizer.apply_gradients(zip(gradients, variables))
+            optimizer.apply_gradients(zip(gradients, variables), global_step=global_step)
             
             if batch % 100 == 0:
                 print('Epoch {} Batch {} Loss {:.4f}'.format(epoch + 1,
