@@ -69,7 +69,7 @@ parser.add_argument(
 )
 
 args = parser.parse_args()
-checkpoint_dir = args.model_dir + './training_checkpoints'
+checkpoint_dir = args.model_dir + '/training_checkpoints'
 checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt")
 
 # create a writer to write summaries/losses
@@ -126,9 +126,10 @@ def run(args):
         start = time.time()
         
         total_loss = 0
+        num_batch = 0
         
         for (batch, (input_seq, target_seq)) in enumerate(Data.data):
-            
+            num_batch += 1
             loss = 0
             with tf.GradientTape() as tape:
                 encoder_output = encoder(input_seq)
@@ -166,7 +167,7 @@ def run(args):
             checkpoint.save(file_prefix = checkpoint_prefix)
         
         print('Epoch {} Loss {:.4f}'.format(epoch + 1,
-                                            total_loss / N_BATCH))
+                                            total_loss / num_batch))
         print('Time taken for 1 epoch {} sec\n'.format(time.time() - start))
 
 if __name__=="__main__":
