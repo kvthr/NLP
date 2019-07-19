@@ -11,6 +11,7 @@ testing_script.py
 **/.ipynb_checkpoints
 **/model_dir/**
 **/log_dir/**
+**/training_checkpoints/**
 
 # NMT data files
 *.en
