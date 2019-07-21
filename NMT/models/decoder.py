@@ -35,17 +35,19 @@ class Decoder(tf.keras.Model):
         self.W2 = tf.keras.layers.Dense(self.decoder_size)
         self.V = tf.keras.layers.Dense(1)
 
-    def call(self, inputs, decoder_hidden, encoder_output):
+    def call(self, inputs, decoder_state, encoder_output):
         """
 
         Parameters:
         inputs: Shape-(batch_size, 1), pass the input at only one time step
-        decoder_hidden: Shape-(batch_size, hidden_size), hidden state of the decoder
+        decoder_state: list of length 2, Shape-(batch_size, hidden_size), hidden state of the decoder
         encoder_output: Shape-(batch_size, max_sequence_length, 2*hidden_size)
         """
 
         # expand hidden_state in the time axis
-        hidden_time_expanded = tf.expand_dims(decoder_hidden, 1)
+        print(decoder_state[0].shape)
+        hidden_time_expanded = tf.expand_dims(decoder_state[0], 1)
+        print(hidden_time_expanded.shape)
 
         # get score for each time step of encoder hidden
         # using W1 and W2 of Additive Attention model
@@ -63,13 +65,13 @@ class Decoder(tf.keras.Model):
         # concatenate the context vector and inputs
         inputs = tf.concat([tf.expand_dims(context_vector, axis=1), inputs], axis=-1)
 
-        output = self.rnn(inputs)
-        output_ = tf.reshape(output[0], (-1, output[0].shape[2]))
+        output, decoder_hidden, decoder_context = self.rnn(inputs, decoder_state)
+        output_ = tf.reshape(output, (-1, output.shape[2]))
         
         # get the logits for the predicted token
         logits = self.fc(output_)
         
-        return logits, output[1:], attention_weights
+        return logits, [decoder_hidden, decoder_context], attention_weights
 
     def initialize_hidden(self):
         return [tf.zeros((self.batch_size, self.decoder_size)) for i in range(2)]

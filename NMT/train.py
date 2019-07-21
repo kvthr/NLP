@@ -124,6 +124,8 @@ def run(args):
 
     for epoch in range(args.epochs):
         start = time.time()
+        # intialize the hidden states of encoder
+        encoder_state = encoder.initialize_hidden()
         
         total_loss = 0
         num_batch = 0
@@ -132,15 +134,15 @@ def run(args):
             num_batch += 1
             loss = 0
             with tf.GradientTape() as tape:
-                encoder_output = encoder(input_seq)
+                encoder_output, encoder_state = encoder(input_seq, encoder_state)
                 # initialize decoder hidden state
-                decoder_hidden = decoder.initialize_hidden()
+                decoder_state = encoder_state[0]
                 decoder_input = tf.expand_dims([tgt_LI.word2idx['<start>']] * args.batch_size, 1)       
                 
                 # Teacher forcing - feeding the target as the next input
                 for t in range(1, target_seq.shape[1]):
                     # passing encoder_outputs to the decoder
-                    predictions, decoder_hidden, _ = decoder(decoder_input, decoder_hidden[0], encoder_output)
+                    predictions, decoder_state, _ = decoder(decoder_input, decoder_state, encoder_output)
                     
                     loss += loss_function(target_seq[:, t], predictions)
                     
@@ -162,8 +164,8 @@ def run(args):
                 print('Epoch {} Batch {} Loss {:.4f}'.format(epoch + 1,
                                                             batch,
                                                             batch_loss.numpy()))
-        # saving (checkpoint) the model every 10 epochs
-        if (epoch + 1) % 10 == 0:
+        # saving (checkpoint) the model every 1 epoch
+        if (epoch + 1) % 1 == 0:
             checkpoint.save(file_prefix = checkpoint_prefix)
         
         print('Epoch {} Loss {:.4f}'.format(epoch + 1,
