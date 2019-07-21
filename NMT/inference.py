@@ -31,7 +31,7 @@ encoder = BiLSTMEncoder(
     vocab_size = len(src_LI.word2idx),
     embedding_dim=128,
     encoder_size=16,
-    batch_size=16
+    batch_size=8
 )
 print("Created an encoder object.")
 
@@ -40,7 +40,7 @@ decoder = Decoder(
     vocab_size = len(tgt_LI.word2idx),
     embedding_dim=128,
     decoder_size=16,
-    batch_size=16
+    batch_size=8
 )
 print("Created a decoder object.")
 
@@ -50,7 +50,7 @@ checkpoint = tf.train.Checkpoint(optimizer=optimizer,
                                  encoder=encoder,
                                  decoder=decoder)
 
-checkpoint.restore(tf.train.latest_checkpoint("./training_checkpoints"))
+checkpoint.restore(tf.train.latest_checkpoint("./train_dir_16/training_checkpoints"))
 
 def translate(input_sentence):
 
@@ -61,14 +61,16 @@ def translate(input_sentence):
     
     result = ''
     print(inputs.shape)
-    encoder_out = encoder(inputs)
+    state = [[tf.zeros((1, 16)) for i in range(2)],
+                [tf.zeros((1, 16)) for i in range(2)]]
+    encoder_out, encoder_state = encoder(inputs, state)
     print(encoder_out.shape)
 
-    decoder_hidden = [tf.zeros((1, decoder.decoder_size)) for i in range(2)]
+    decoder_state = encoder_state[0]
     decoder_input = tf.expand_dims([tgt_LI.word2idx['<start>']], 0)
 
     for t in range(50):
-        predictions, decoder_hidden, _ = decoder(decoder_input, decoder_hidden[0], encoder_out)
+        predictions, decoder_state, _ = decoder(decoder_input, decoder_state, encoder_out)
 
         predicted_id = tf.argmax(predictions[0]).numpy()
 

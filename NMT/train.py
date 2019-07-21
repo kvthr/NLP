@@ -164,6 +164,8 @@ def run(args):
                 print('Epoch {} Batch {} Loss {:.4f}'.format(epoch + 1,
                                                             batch,
                                                             batch_loss.numpy()))
+            if batch % 2000 == 0:
+                checkpoint.save(file_prefix = checkpoint_prefix)
         # saving (checkpoint) the model every 1 epoch
         if (epoch + 1) % 1 == 0:
             checkpoint.save(file_prefix = checkpoint_prefix)

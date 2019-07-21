@@ -45,9 +45,7 @@ class Decoder(tf.keras.Model):
         """
 
         # expand hidden_state in the time axis
-        print(decoder_state[0].shape)
         hidden_time_expanded = tf.expand_dims(decoder_state[0], 1)
-        print(hidden_time_expanded.shape)
 
         # get score for each time step of encoder hidden
         # using W1 and W2 of Additive Attention model

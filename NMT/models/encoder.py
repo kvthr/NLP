@@ -21,29 +21,25 @@ class BiLSTMEncoder(tf.keras.Model):
             self.forward_rnn = tf.keras.layers.CuDNNLSTM(
                     units=self.encoder_size,
                     return_sequences=True,
-                    return_state=True,
-                    recurrent_initializer='glorot_unifrom'
+                    return_state=True
                 )
             self.backward_rnn = tf.keras.layers.CuDNNLSTM(
                     units=self.encoder_size,
                     return_sequences=True,
                     return_state=True,
-                    go_backwards=True,
-                    recurrent_initializer='glorot_unifrom'
+                    go_backwards=True
                 )
         else:
             self.forward_rnn = tf.keras.layers.LSTM(
                 units=self.encoder_size,
                 return_sequences=True,
-                return_state=True,
-                recurrent_initializer='glorot_uniform'
+                return_state=True
             )
             self.backward_rnn = tf.keras.layers.LSTM(
                 units=self.encoder_size,
                 return_sequences=True,
                 return_state=True,
-                go_backwards=True,
-                recurrent_initializer='glorot_uniform'
+                go_backwards=True
             )
 
     def call(self, inputs, hidden):
